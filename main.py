@@ -1,8 +1,8 @@
-from aiogram import Bot, Dispatcher, executor, types, filters
+from aiogram import Bot, Dispatcher, executor, types, filters #pip 2.23.1
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import asyncio
 import aioschedule
-import random
+import  random
 import pandas as pd
 from config import API_TOKEN
 from config import FILENAME
@@ -12,6 +12,9 @@ from config import nicknames
 from config import emoji
 excel_data = pd.read_excel(FILENAME, usecols=[0])
 data = pd.DataFrame(excel_data)
+dump_size=58
+wake_time = '8:30'
+sleep_time = '00:00'
 phrases = data['name'].tolist()
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
@@ -53,7 +56,7 @@ async def with_puree(message: types.Message):
 
 @dp.message_handler(filters.Text(bt_names[1]))
 async def upload_photo(message: types.Message):
-    await message.answer_photo(types.InputFile(f"photo/{random.randint(1, 48)}.jpg"))
+    await message.answer_photo(types.InputFile(f"photo/{random.randint(1, dump_size)}.jpg"))
 
 
 @dp.message_handler(filters.Text(bt_names[2]))
@@ -83,8 +86,8 @@ async def good_morning():
 
 
 async def scheduler():
-    aioschedule.every().day.at("8:30").do(good_morning)
-    aioschedule.every().day.at("00:25").do(good_night)
+    aioschedule.every().day.at(wake_time).do(good_morning)
+    aioschedule.every().day.at(sleep_time).do(good_night)
 
     while True:
         await aioschedule.run_pending()
